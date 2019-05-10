@@ -58,7 +58,7 @@ case $1 in
 	esac
 	;;
    *)
-	echo "whmapiaccess [command] [options]"
-	exit -1
+	whmapi1 "$@"
+        exit -1
    ;;
 esac
