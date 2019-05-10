@@ -1,0 +1,64 @@
+#!/bin/bash
+
+#bmxwhmapiaccess - 2019 - tony@bemba.mx
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit -1
+fi
+
+
+#Select command
+
+if  [ -z "$1" ]
+then
+   echo "Please name a command to access"
+   exit -1
+fi
+
+case $1 in
+   "pass")
+	if [ ! -z "$2" ] &&  [ -z "$3" ]
+	then
+	   echo "Password:"
+	   read bmxpass
+	   whmapi1 passwd user=$2 password=$bmxpass db_pass_update=1
+	   exit -1
+	fi
+	if [ -z "$2" ] && [ -z "$3" ]
+	then
+	   echo "Username:"
+	   read bmxuser
+	   echo "Password:"
+	   read bmxpass
+	   whmapi1 passwd user=$bmxuser password=$bmxpass db_pass_update=1
+	   exit -1
+	fi
+	whmapi1 passwd user=$2 password=$3 db_pass_update=1	
+   	;;
+   "mail")
+	if [ -z "$2" ]
+        then
+	   echo "Mail: No command selected"
+	   exit -1
+	fi
+	case $2 in
+	   "list")
+		if [ -z "$3" ]
+		then
+		   echo "Mail:List: No user selected"
+		   exit -1
+		fi
+		whmapi1 list_pops_for user=$3
+		exit -1
+	   ;;
+	   *)
+		echo "Mail: No existing command selected"
+		;;
+	esac
+	;;
+   *)
+	echo "whmapiaccess [command] [options]"
+	exit -1
+   ;;
+esac
